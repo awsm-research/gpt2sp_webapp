@@ -22,7 +22,7 @@ if __name__ == "__main__":
     st.title('GPT2SP - Agile Story Point Estimator')
     # model select box
     with st.form("model_select_form"):
-        model_name = st.selectbox(label="SELECT A MODEL",
+        model_name = st.selectbox(label="Select the Agile project",
                                   options=["AppceleratorStudio",
                                            "AptanaStudio",
                                            "Bamboo",
@@ -41,12 +41,12 @@ if __name__ == "__main__":
                                            "UserGrid"])
 
         # user input of project title
-        project_title = st.text_input("ENTER PROJECT TITLE:", "")
+        project_title = st.text_input("Enter a task title:", "")
         submitted = st.form_submit_button("Predict Story Point")
 
         if submitted:
             if not project_title:
-                st.error("Please enter your project title!")
+                st.error("Please enter a task title!")
                 st.stop()
             # load model
             with st.spinner("Loading model from the server, this may take a while..."):
@@ -58,7 +58,7 @@ if __name__ == "__main__":
             st.balloons()
             st.write("Suggested Story Point: ", story_point)
             # interpret the prediction
-            with st.spinner("XAI..."):
+            with st.spinner("Generating Explanations..."):
                 explainer = SequenceClassificationExplainer(pipeline.model, pipeline.tokenizer)
                 word_attributions = explainer(project_title)
                 explanation_html = explainer.visualize()
