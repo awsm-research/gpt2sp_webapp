@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "gpt2sp_webapp"
 version = "0.1.0"
-description = ""
-authors = ["Your Name <you@example.com>"]
+description = "GPT2SP: Agile Story Point Estimator"
+authors = ["Michael Fu <michaelfu1998@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"

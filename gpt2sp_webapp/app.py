@@ -109,7 +109,7 @@ if submitted:
     # load model
     with st.spinner("Loading model from the server, this may take a while..."):
         pipeline = get_gpt2sp_pipeline(model_name)
-        st.success('Model Loaded Successfully!')
+        ##st.success('Model Loaded Successfully!')
     # do inference
     story_point = predict_sp(pipeline, project_title)
     # inference complete
@@ -123,7 +123,7 @@ if submitted:
         explanation_html = explainer.visualize()
         explanation_html = html_parser(explanation_html.data)
         st.write(explanation_html)
-        st.markdown(":fire: Top token contributing to the prediction: **%s**" % str(top_token[0]))
+        st.markdown(f"**'{str(top_token[0])}'** is the most influential token contributing to the estimation")
     with st.spinner("Parsing historical data based on the top token '%s'" % str(top_token[0])):
         # parsed_issues: 2D list > [[project, issue id, issue title, sp], ...]
         # counting: list > [historical data in ths same project, historical data in the diff project]
@@ -132,18 +132,17 @@ if submitted:
         if counting[0] == 0 and counting[1] == 0:
             st.error("No similar historical data in training datasets")
             st.stop()
-        st.success("Similar historical issues found!")
-        if counting[0] >= 3:
-            st.markdown("**%s** issues from the same project"
-                        % str(counting[0]))
-        else:
-            st.markdown("**%s** issues from the same project and **%s** issues from the different project"
-                        % (str(counting[0]), str(counting[1])))
-        st.markdown("that have the **_same_ _token_** and **_same_ _story_ _point_** as the predicted issue")
-        write_statistics(counting)
-        # maybe markdown formula for % support
-        st.latex(r'''\frac{\#\mathrm{past\_issues}(\mathrm{same\_project, same\_token, same\_SP})}{\#\mathrm{past\_issues}(\mathrm{same\_project,same\_token})}\times100\%''')
-        st.markdown(f"Here are the 3 best supporting examples")
+        ##st.success("Similar historical issues found!")
+        ##if counting[0] >= 3:
+        ##    st.markdown("**%s** issues from the same project"
+        ##                % str(counting[0]))
+        ##else:
+        ##    st.markdown("**%s** issues from the same project and **%s** issues from the different project"
+        ##                % (str(counting[0]), str(counting[1])))
+        ##st.markdown("that have the **_same_ _token_** and **_same_ _story_ _point_** as the predicted issue")
+        ##write_statistics(counting)
+        ##st.latex(r'''\frac{\#\mathrm{past\_issues}(\mathrm{same\_project, same\_token, same\_SP})}{\#\mathrm{past\_issues}(\mathrm{same\_project,same\_token})}\times100\%''')
+        st.markdown(f"Here are the best 3 supporting examples!")
         hidden_html = write_history_table(parsed_issues)
     # see if there is hidden table to show
     if hidden_html == "NA":
