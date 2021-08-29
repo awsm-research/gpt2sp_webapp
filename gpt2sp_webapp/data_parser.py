@@ -10,7 +10,7 @@ class DataParser:
         self.n_data = None
 
         self.DATA_PATH = "./historical_data/"
-        self.token_file = "training_tokens_non_unique.csv"
+        self.token_file = "./training_tokens_non_unique.csv"
         self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
         # 2D list > [[project, issue id hyperlink, issue id, issue title, sp], ...]
         self.parsed_issues = []
@@ -28,15 +28,22 @@ class DataParser:
                                  "TalendDataQuality": "Talend Data Quality",
                                  "TalendESB": "Talend ESB"}
         self.link_map = {"titanium": "https://jira.appcelerator.org/browse/",
-                         "jirasoftware": "",
-                         "appceleratorstudio": "",
-                         "aptanastudio": "",
+                         "jirasoftware": "https://jira.atlassian.com/browse/",
+                         "appceleratorstudio": "https://jira.appcelerator.org/browse/",
+                         "aptanastudio": "https://jira.appcelerator.org/browse/",
+                         # deprecated
                          "datamanagement": "",
-                         "duracloud": "",
-                         "mulestudio": "",
-                         "springxd": "",
-                         "talenddataquality": "",
-                         "talendesb": ""}
+                         "duracloud": "https://jira.duraspace.org/browse/",
+                         "mule": "https://www.mulesoft.org/jira/browse/",
+                         "mulestudio": "https://www.mulesoft.org/jira/browse/",
+                         "springxd": "https://jira.spring.io/browse/",
+                         "talenddataquality": "https://jira.talendforge.org/browse/",
+                         "talendesb": "https://jira.talendforge.org/browse/",
+                         "bamboo": "https://jira.atlassian.com/browse/",
+                         "clover": "https://jira.atlassian.com/browse/",
+                         "moodle": "https://tracker.moodle.org/browse/",
+                         "mesos": "https://issues.apache.org/jira/browse/",
+                         "usergrid": "https://issues.apache.org/jira/browse/"}
 
     def __call__(self, predicted_project: str, predicted_sp: int, selected_tokens: list, n_data=3) -> list:
         self.predicted_project = predicted_project
