@@ -1,3 +1,5 @@
+import base64
+
 import streamlit as st
 from transformers import GPT2Tokenizer, Pipeline
 from GPT2ForSequenceClassification import GPT2ForSequenceClassification as GPT2SP
@@ -5,6 +7,7 @@ from transformers_interpret.explainers.sequence_classification import SequenceCl
 from data_parser import DataParser
 from html_parser import html_parser
 from html_table_builder import HTMLTable
+import pandas as pd
 
 FULL_PROJ_NAME = {"Titanium": "Titanium SDK/CLI",
                   "JiraSoftware": "JIRA Software",
@@ -25,7 +28,13 @@ MODEL_NAME = {"Titanium SDK/CLI": "Titanium",
               "Mule Studio": "MuleStudio",
               "Spring XD": "SpringXD",
               "Talend Data Quality": "TalendDataQuality",
-              "Talend ESB": "TalendESB"}
+              "Talend ESB": "TalendESB",
+              "Usergrid": "usergrid",
+              "Mule": "mule",
+              "Moodle": "moodle",
+              "Mesos": "mesos",
+              "Clover": "clover",
+              "Bamboo": "bamboo"}
 
 
 def get_gpt2sp_pipeline(model: str) -> Pipeline:
@@ -74,78 +83,115 @@ def write_statistics(data: list):
         st.markdown(f'% of Supporting Examples: **{int(data[2])}%** calculated by the following formula')
 
 
-checked = False
-pipeline = None
-# app title
-st.title('GPT2SP - Agile Story Point Estimator')
-# model select box
-with st.form("model_select_form"):
-    model_name = st.selectbox(label="Select the Agile project",
-                              options=[FULL_PROJ_NAME["AppceleratorStudio"],
-                                       FULL_PROJ_NAME["AptanaStudio"],
-                                       "Bamboo",
-                                       "Clover",
-                                       FULL_PROJ_NAME["DataManagement"],
-                                       FULL_PROJ_NAME["DuraCloud"],
-                                       FULL_PROJ_NAME["JiraSoftware"],
-                                       "Mesos",
-                                       "Moodle",
-                                       "Mule",
-                                       FULL_PROJ_NAME["MuleStudio"],
-                                       FULL_PROJ_NAME["SpringXD"],
-                                       FULL_PROJ_NAME["TalendDataQuality"],
-                                       FULL_PROJ_NAME["TalendESB"],
-                                       FULL_PROJ_NAME["Titanium"],
-                                       "Usergrid"])
-    model_name = MODEL_NAME[model_name]
-    # user input of project title
-    project_title = st.text_input("Enter a task title:", "")
-    submitted = st.form_submit_button("Predict Story Point")
+if __name__ == "__main__":
+    st.set_page_config(page_title="GPT2SP", page_icon="./logo/gpt2sp_logo.png")
+    checked = False
+    pipeline = None
+    behavior = None
+    dataset = None
+    # sidebar
+    st.sidebar.title("GPT2SP Web App")
+    behavior = st.sidebar.selectbox(label="NAVIGATOR IS HERE:",
+                                    options=["GPT2SP: Agile Story Point Estimator", "Dataset Viewer"])
+    if behavior == "Dataset Viewer":
+        # function title
+        st.title("Agile Dataset Viewer")
+        dataset = st.selectbox(label="Select the Agile Dataset",
+                               options=[FULL_PROJ_NAME["AppceleratorStudio"],
+                                        FULL_PROJ_NAME["AptanaStudio"],
+                                        "Bamboo",
+                                        "Clover",
+                                        FULL_PROJ_NAME["DataManagement"],
+                                        FULL_PROJ_NAME["DuraCloud"],
+                                        FULL_PROJ_NAME["JiraSoftware"],
+                                        "Mesos",
+                                        "Moodle",
+                                        "Mule",
+                                        FULL_PROJ_NAME["MuleStudio"],
+                                        FULL_PROJ_NAME["SpringXD"],
+                                        FULL_PROJ_NAME["TalendDataQuality"],
+                                        FULL_PROJ_NAME["TalendESB"],
+                                        FULL_PROJ_NAME["Titanium"],
+                                        "Usergrid"])
+        dataset = MODEL_NAME[dataset]
+        dataset = dataset.lower()
+        st.dataframe(pd.read_csv("./historical_data/" + dataset + ".csv"))
 
-if submitted:
-    if not project_title:
-        st.error("Please enter a task title!")
-        st.stop()
-    # load model
-    with st.spinner("Loading model from the server, this may take a while..."):
-        pipeline = get_gpt2sp_pipeline(model_name)
-        ##st.success('Model Loaded Successfully!')
-    # do inference
-    story_point = predict_sp(pipeline, project_title)
-    # inference complete
-    st.balloons()
-    st.write("Suggested Story Point: ", story_point)
-    # interpret the prediction
-    with st.spinner("Generating Explanations..."):
-        explainer = SequenceClassificationExplainer(pipeline.model, pipeline.tokenizer)
-        word_attributions = explainer(project_title)
-        top_token = get_top_token(word_attributions)
-        explanation_html = explainer.visualize()
-        explanation_html = html_parser(explanation_html.data)
-        st.write(explanation_html)
-        st.markdown(f"**'{str(top_token[0])}'** is the most influential token contributing to the estimation")
-    with st.spinner("Parsing historical data based on the top token '%s'" % str(top_token[0])):
-        # parsed_issues: 2D list > [[project, issue id, issue title, sp], ...]
-        # counting: list > [historical data in ths same project, historical data in the diff project]
-        parsed_issues, counting = parse_history(model_name.lower(), story_point, top_token, n_data=3)
-        # if no historical token is parsed
-        if counting[0] == 0 and counting[1] == 0:
-            st.error("No similar historical data in training datasets")
-            st.stop()
-        ##st.success("Similar historical issues found!")
-        ##if counting[0] >= 3:
-        ##    st.markdown("**%s** issues from the same project"
-        ##                % str(counting[0]))
-        ##else:
-        ##    st.markdown("**%s** issues from the same project and **%s** issues from the different project"
-        ##                % (str(counting[0]), str(counting[1])))
-        ##st.markdown("that have the **_same_ _token_** and **_same_ _story_ _point_** as the predicted issue")
-        ##write_statistics(counting)
-        ##st.latex(r'''\frac{\#\mathrm{past\_issues}(\mathrm{same\_project, same\_token, same\_SP})}{\#\mathrm{past\_issues}(\mathrm{same\_project,same\_token})}\times100\%''')
-        st.markdown(f"Here are the best 3 supporting examples!")
-        hidden_html = write_history_table(parsed_issues)
-    # see if there is hidden table to show
-    if hidden_html == "NA":
-        st.stop()
-    st.button("show all")
-    # find a way for show all button ....
+    if behavior == "GPT2SP: Agile Story Point Estimator":
+        col1, mid, col2 = st.columns([10, 6, 70])
+        with col1:
+            st.image("./logo/gpt2sp_logo.png", width=100)
+        with col2:
+            st.title("GPT2SP - Agile Story Point Estimator")
+
+        # model select box
+        with st.form("model_select_form"):
+            model_name = st.selectbox(label="Select the Agile project",
+                                      options=[FULL_PROJ_NAME["AppceleratorStudio"],
+                                               FULL_PROJ_NAME["AptanaStudio"],
+                                               "Bamboo",
+                                               "Clover",
+                                               FULL_PROJ_NAME["DataManagement"],
+                                               FULL_PROJ_NAME["DuraCloud"],
+                                               FULL_PROJ_NAME["JiraSoftware"],
+                                               "Mesos",
+                                               "Moodle",
+                                               "Mule",
+                                               FULL_PROJ_NAME["MuleStudio"],
+                                               FULL_PROJ_NAME["SpringXD"],
+                                               FULL_PROJ_NAME["TalendDataQuality"],
+                                               FULL_PROJ_NAME["TalendESB"],
+                                               FULL_PROJ_NAME["Titanium"],
+                                               "Usergrid"])
+            model_name = MODEL_NAME[model_name]
+            # user input of project title
+            project_title = st.text_input("Enter a task title:", "")
+            submitted = st.form_submit_button("Predict Story Point")
+
+        if submitted:
+            if not project_title:
+                st.error("Please enter a task title!")
+                st.stop()
+            # load model
+            with st.spinner("Loading model from the server, this may take a while..."):
+                pipeline = get_gpt2sp_pipeline(model_name)
+                ##st.success('Model Loaded Successfully!')
+            # do inference
+            story_point = predict_sp(pipeline, project_title)
+            # inference complete
+            st.balloons()
+            st.write("Suggested Story Point: ", story_point)
+            # interpret the prediction
+            with st.spinner("Generating Explanations..."):
+                explainer = SequenceClassificationExplainer(pipeline.model, pipeline.tokenizer)
+                word_attributions = explainer(project_title)
+                top_token = get_top_token(word_attributions)
+                explanation_html = explainer.visualize()
+                explanation_html = html_parser(explanation_html.data)
+                st.write(explanation_html)
+                st.markdown(f"**'{str(top_token[0])}'** is the most influential token contributing to the estimation")
+            with st.spinner("Parsing historical data based on the top token '%s'" % str(top_token[0])):
+                # parsed_issues: 2D list > [[project, issue id, issue title, sp], ...]
+                # counting: list > [historical data in ths same project, historical data in the diff project]
+                parsed_issues, counting = parse_history(model_name.lower(), story_point, top_token, n_data=3)
+                # if no historical token is parsed
+                if counting[0] == 0 and counting[1] == 0:
+                    st.error("No similar historical data in training datasets")
+                    st.stop()
+                st.success("Similar historical issues found!")
+                if counting[0] >= 3:
+                    st.markdown("**%s** issues from the same project"
+                                % str(counting[0]))
+                else:
+                    st.markdown("**%s** issues from the same project and **%s** issues from the different project"
+                                % (str(counting[0]), str(counting[1])))
+                st.markdown("that have the **_same_ _token_** and **_same_ _story_ _point_** as the predicted issue")
+                write_statistics(counting)
+                st.latex(r'''\frac{\#\mathrm{past\_issues}(\mathrm{same\_project, same\_token, same\_SP})}{\#\mathrm{past\_issues}(\mathrm{same\_project,same\_token})}\times100\%''')
+                st.markdown(f"Here are the best 3 supporting examples!")
+                hidden_html = write_history_table(parsed_issues)
+            # see if there is hidden table to show
+            if hidden_html == "NA":
+                st.stop()
+            st.button("show all")
+            # find a way for show all button ....
