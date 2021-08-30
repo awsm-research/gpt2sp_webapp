@@ -118,6 +118,7 @@ if __name__ == "__main__":
         st.dataframe(pd.read_csv("./historical_data/" + dataset + ".csv"))
 
     if behavior == "GPT2SP: Agile Story Point Estimator":
+        # set up logo and title
         col1, mid, col2 = st.columns([10, 6, 70])
         with col1:
             st.image("./logo/gpt2sp_logo.png", width=100)
