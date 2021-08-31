@@ -86,7 +86,6 @@ def write_statistics(data: list):
 
 if __name__ == "__main__":
     st.set_page_config(page_title="GPT2SP")
-    st.image("logo/gpt2sp_logo.png")
     checked = False
     pipeline = None
     behavior = None
