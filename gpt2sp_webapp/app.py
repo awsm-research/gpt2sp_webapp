@@ -85,7 +85,7 @@ def write_statistics(data: list):
 
 if __name__ == "__main__":
     # load logo
-    logo = Image.open("./gpt2sp_logo.png")
+    #logo = Image.open("./gpt2sp_logo.png")
     st.set_page_config(page_title="GPT2SP")#, page_icon=logo)
     checked = False
     pipeline = None
@@ -123,7 +123,7 @@ if __name__ == "__main__":
         # set up logo and title
         col1, mid, col2 = st.columns([10, 6, 70])
         with col1:
-            st.image(logo, width=100)
+            st.image("./logo/gpt2sp_logo.png", width=100)
         with col2:
             st.title("GPT2SP - Agile Story Point Estimator")
 
