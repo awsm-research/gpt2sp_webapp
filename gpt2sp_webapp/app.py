@@ -1,4 +1,5 @@
 import os
+
 import pandas as pd
 import streamlit as st
 from transformers import GPT2Tokenizer, Pipeline
@@ -8,7 +9,6 @@ from data_parser import DataParser
 from html_parser import html_parser
 from html_table_builder import HTMLTable
 from transformers_interpret.explainers.sequence_classification import SequenceClassificationExplainer
-from PIL import Image
 
 FULL_PROJ_NAME = {"Titanium": "Titanium SDK/CLI",
                   "JiraSoftware": "JIRA Software",
@@ -85,8 +85,6 @@ def write_statistics(data: list):
 
 
 if __name__ == "__main__":
-    # load logo
-    path = os.path.dirname(__file__)
     st.set_page_config(page_title="GPT2SP")
     checked = False
     pipeline = None
