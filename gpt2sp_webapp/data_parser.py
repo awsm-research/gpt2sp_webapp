@@ -1,5 +1,8 @@
+import os
 import pandas as pd
 from transformers import GPT2Tokenizer
+
+PATH = os.getcwd() + "/gpt2sp_webapp"
 
 
 class DataParser:
@@ -9,8 +12,8 @@ class DataParser:
         self.selected_tokens = None
         self.n_data = None
 
-        self.DATA_PATH = "./historical_data/"
-        self.token_file = "./training_tokens_non_unique.csv"
+        self.DATA_PATH = PATH + "/historical_data/"
+        self.token_file = PATH + "/historical_data/training_tokens_non_unique.csv"
         self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
         # 2D list > [[project, issue id hyperlink, issue id, issue title, sp], ...]
         self.parsed_issues = []

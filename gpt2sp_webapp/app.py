@@ -1,5 +1,4 @@
 import os
-
 import pandas as pd
 import streamlit as st
 from transformers import GPT2Tokenizer, Pipeline
@@ -35,6 +34,8 @@ MODEL_NAME = {"Titanium SDK/CLI": "Titanium",
               "Mesos": "mesos",
               "Clover": "clover",
               "Bamboo": "bamboo"}
+
+PATH = os.getcwd() + "/gpt2sp_webapp"
 
 
 def get_gpt2sp_pipeline(model: str) -> Pipeline:
@@ -84,7 +85,8 @@ def write_statistics(data: list):
 
 
 if __name__ == "__main__":
-    st.set_page_config(page_title="GPT2SP")
+    logo = PATH + "/logo/gpt2sp_logo.png"
+    st.set_page_config(page_title="GPT2SP", page_icon=logo)
     checked = False
     pipeline = None
     behavior = None
@@ -115,14 +117,15 @@ if __name__ == "__main__":
                                         "Usergrid"])
         dataset = MODEL_NAME[dataset]
         dataset = dataset.lower()
-        dataset_path = "/app/gpt2sp_webapp/gpt2sp_webapp/historical_data/" + dataset + ".csv"
+        dataset_path = PATH + "/historical_data/" + dataset + ".csv"
         st.dataframe(pd.read_csv(dataset_path))
-
-    if behavior == "GPT2SP: Agile Story Point Estimator":
-        st.write(os.getcwd())
-        st.write(os.path.abspath(os.getcwd()))
+    elif behavior == "GPT2SP: Agile Story Point Estimator":
         # set up logo and title
-        st.title("GPT2SP - Agile Story Point Estimator")
+        col1, col2, col3 = st.container([10, 6, 70])
+        with col1:
+            st.image(logo)
+        with col2:
+            st.title("GPT2SP - Agile Story Point Estimator")
 
         # model select box
         with st.form("model_select_form"):
@@ -155,7 +158,7 @@ if __name__ == "__main__":
             # load model
             with st.spinner("Loading model from the server, this may take a while..."):
                 pipeline = get_gpt2sp_pipeline(model_name)
-                ##st.success('Model Loaded Successfully!')
+                st.success('Model Loaded Successfully!')
             # do inference
             story_point = predict_sp(pipeline, project_title)
             # inference complete
