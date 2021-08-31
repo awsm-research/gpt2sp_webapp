@@ -84,7 +84,6 @@ def write_statistics(data: list):
 
 
 if __name__ == "__main__":
-    cwd = os.getcwd()
     st.set_page_config(page_title="GPT2SP")
     checked = False
     pipeline = None
@@ -116,7 +115,7 @@ if __name__ == "__main__":
                                         "Usergrid"])
         dataset = MODEL_NAME[dataset]
         dataset = dataset.lower()
-        dataset_path = cwd + "./gpt2sp_webapp/historical_data/historical_data/" + dataset + ".csv"
+        dataset_path = "./gpt2sp_webapp/historical_data/historical_data/" + dataset + ".csv"
         st.dataframe(pd.read_csv(dataset_path))
 
     if behavior == "GPT2SP: Agile Story Point Estimator":
