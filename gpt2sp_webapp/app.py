@@ -121,10 +121,10 @@ if __name__ == "__main__":
         st.dataframe(pd.read_csv(dataset_path))
     elif behavior == "GPT2SP: Agile Story Point Estimator":
         # set up logo and title
-        col1, col2, col3 = st.columns([10, 6, 70])
-        with col1:
+        logo_col, _, title_col = st.columns([10, 6, 70])
+        with logo_col:
             st.image(logo)
-        with col2:
+        with title_col:
             st.title("GPT2SP - Agile Story Point Estimator")
 
         # model select box
