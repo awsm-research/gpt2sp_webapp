@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from transformers import GPT2Tokenizer
 
-PATH = os.getcwd() + "/gpt2sp_webapp"
+PATH = os.getcwd()
 
 
 class DataParser:

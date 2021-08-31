@@ -35,7 +35,7 @@ MODEL_NAME = {"Titanium SDK/CLI": "Titanium",
               "Clover": "clover",
               "Bamboo": "bamboo"}
 
-PATH = os.getcwd() + "/gpt2sp_webapp"
+PATH = os.getcwd()
 
 
 def get_gpt2sp_pipeline(model: str) -> Pipeline:
