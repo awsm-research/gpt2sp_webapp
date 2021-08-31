@@ -1,14 +1,13 @@
-import base64
-import os
-
+import pandas as pd
 import streamlit as st
 from transformers import GPT2Tokenizer, Pipeline
+
 from GPT2ForSequenceClassification import GPT2ForSequenceClassification as GPT2SP
-from transformers_interpret.explainers.sequence_classification import SequenceClassificationExplainer
 from data_parser import DataParser
 from html_parser import html_parser
 from html_table_builder import HTMLTable
-import pandas as pd
+from transformers_interpret.explainers.sequence_classification import SequenceClassificationExplainer
+from PIL import Image
 
 FULL_PROJ_NAME = {"Titanium": "Titanium SDK/CLI",
                   "JiraSoftware": "JIRA Software",
@@ -85,9 +84,9 @@ def write_statistics(data: list):
 
 
 if __name__ == "__main__":
-    # fix this
-    logo_path = './logo/gpt2sp_logo.png'
-    st.set_page_config(page_title="GPT2SP", page_icon=logo_path)
+    # load logo
+    logo = Image.open("./logo/gpt2sp_logo.png")
+    st.set_page_config(page_title="GPT2SP", page_icon=logo)
     checked = False
     pipeline = None
     behavior = None
@@ -124,7 +123,7 @@ if __name__ == "__main__":
         # set up logo and title
         col1, mid, col2 = st.columns([10, 6, 70])
         with col1:
-            st.image(logo_path, width=100)
+            st.image(logo, width=100)
         with col2:
             st.title("GPT2SP - Agile Story Point Estimator")
 
