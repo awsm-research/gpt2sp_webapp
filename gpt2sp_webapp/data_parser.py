@@ -13,7 +13,7 @@ class DataParser:
         self.n_data = None
 
         self.DATA_PATH = PATH + "/historical_data/"
-        self.token_file = PATH + "/historical_data/training_tokens_non_unique.csv"
+        self.token_file = "training_tokens_non_unique.csv"
         self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
         # 2D list > [[project, issue id hyperlink, issue id, issue title, sp], ...]
         self.parsed_issues = []
