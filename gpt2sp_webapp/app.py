@@ -121,7 +121,7 @@ if __name__ == "__main__":
 
     if behavior == "GPT2SP: Agile Story Point Estimator":
         st.write(os.getcwd())
-        st.write(os.listdir())
+        st.write(os.path.abspath(os.getcwd()))
         # set up logo and title
         st.title("GPT2SP - Agile Story Point Estimator")
 
