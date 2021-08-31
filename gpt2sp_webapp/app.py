@@ -123,7 +123,7 @@ if __name__ == "__main__":
         # set up logo and title
         logo_col, _, title_col = st.columns([10, 6, 70])
         with logo_col:
-            st.image(logo, width=100)
+            st.image(logo, width=125)
         with title_col:
             st.title("GPT2SP - Agile Story Point Estimator")
 
