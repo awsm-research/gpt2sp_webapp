@@ -119,8 +119,6 @@ if __name__ == "__main__":
         st.dataframe(pd.read_csv(dataset_path))
 
     if behavior == "GPT2SP: Agile Story Point Estimator":
-        st.write(os.getcwd())
-        st.write(os.path.abspath(os.getcwd()))
         # set up logo and title
         st.title("GPT2SP - Agile Story Point Estimator")
 
