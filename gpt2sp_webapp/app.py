@@ -114,7 +114,8 @@ if __name__ == "__main__":
                                         "Usergrid"])
         dataset = MODEL_NAME[dataset]
         dataset = dataset.lower()
-        dataset_path = str(Path(__file__).parents[1]) + "\\gpt2sp_webapp\\historical_data\\" + dataset + ".csv"
+        dataset_path = str(Path(__file__).parents[1]) + "/main/gpt2sp_webapp/historical_data/" + dataset + ".csv"
+        print(dataset_path)
         st.dataframe(pd.read_csv(dataset_path))
 
     if behavior == "GPT2SP: Agile Story Point Estimator":
