@@ -85,7 +85,7 @@ def write_statistics(data: list):
 
 if __name__ == "__main__":
     # load logo
-    logo = Image.open("gpt2sp_logo.png")
+    logo = Image.open("./gpt2sp_logo.png")
     st.set_page_config(page_title="GPT2SP", page_icon=logo)
     checked = False
     pipeline = None
