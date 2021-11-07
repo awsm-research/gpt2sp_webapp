@@ -59,7 +59,7 @@ class DataParser:
 
     def highlight_token(self, title: str):
         return title.replace(self.selected_tokens[0],
-                            f"""<mark style="background-color:hsl(120, 75%, 50%);opacity:1.0;line-height:1.75"><font color="black">{self.selected_tokens[0]}</font></mark>""")
+                             f"""<mark style="background-color:hsl(120, 75%, 50%);opacity:1.0;line-height:1.75"><font color="black">{self.selected_tokens[0]}</font></mark>""")
 
     def load_df(self, path="default") -> pd.DataFrame:
         if path == "default":
@@ -79,11 +79,15 @@ class DataParser:
         # remove duplicate issue ID in case of one issue has the same token appearing more than once
         df = df.drop_duplicates(subset=['ISSUE-ID'])
         total_with_same_sp = len(df)
-        self.same_diff_count[2] = round((total_with_same_sp / total) * 100, 0)
+        if total <= 0:
+            self.same_diff_count[2] = 0
+        else:
+            self.same_diff_count[2] = round((total_with_same_sp / total) * 100, 0)
         # store the issue keys
         for _, row in df.iterrows():
             self.parsed_issues.append([row['Project'],
-                                       self.link_map[self.predicted_project.lower()] + row['ISSUE-ID'],
+                                       self.link_map[self.predicted_project.lower(
+                                       )] + row['ISSUE-ID'],
                                        row['ISSUE-ID']])
             self.parsed_count += 1
             self.same_diff_count[0] += 1
@@ -106,7 +110,8 @@ class DataParser:
             if self.parsed_count == self.n_data:
                 break
             self.parsed_issues.append([row['Project'],
-                                       self.link_map[self.predicted_project.lower()] + row['ISSUE-ID'],
+                                       self.link_map[self.predicted_project.lower(
+                                       )] + row['ISSUE-ID'],
                                        row['ISSUE-ID']])
             self.parsed_count += 1
             self.same_diff_count[1] += 1
