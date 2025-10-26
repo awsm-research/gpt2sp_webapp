@@ -1,21 +1,21 @@
 [tool.poetry]
 name = "gpt2sp_webapp"
-version = "0.1.0"
+version = "0.1.1"
 description = "GPT2SP: Agile Story Point Estimator"
 authors = ["Michael Fu <michaelfu1998@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-streamlit = "^0.87.0"
-torch = "^1.9.0"
-transformers = "^4.9.2"
-ipython = "^7.26.0"
-captum = "^0.4.0"
-pandas = "^1.3.2"
-pillow = ">=10.0.0"
+python = ">=3.9,<3.14"
+streamlit = "^1.38.0"
+torch = "^2.4.1"
+transformers = "^4.45.0"
+ipython = "^8.28.0"
+captum = "^0.7.0"
+pandas = "^2.2.3"
+pillow = "^11.0.0"
 
-[tool.poetry.dev-dependencies]
-pytest = "^5.2"
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
