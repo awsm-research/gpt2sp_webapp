@@ -5,7 +5,7 @@ description = "GPT2SP: Agile Story Point Estimator"
 authors = ["Michael Fu <michaelfu1998@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "3.10"
+python = ">=3.10,<3.14"
 streamlit = "^1.38.0"
 torch = "^2.4.1"
 transformers = "^4.45.0"
